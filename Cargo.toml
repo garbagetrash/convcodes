@@ -8,3 +8,6 @@ awgn = { git = "ssh://git@github.com/garbagetrash/awgn.git" }
 
 [[bin]]
 name = "ccsds_rate_1_2_ber_curve"
+
+[[bin]]
+name = "constraint_3"

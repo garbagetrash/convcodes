@@ -111,8 +111,8 @@ pub struct ViterbiDecoder<const N: usize, const M: usize> {
 impl<const N: usize, const M: usize> ViterbiDecoder<N, M> {
     pub fn new(polynomials: [[u8; M]; N], gamma: usize) -> Self {
         let trellis = build_trellis(polynomials);
-        let mut prior_tups = vec![];
         let s = trellis.len() / 2;
+        let mut prior_tups = vec![];
         for ss in 0..s {
             let mut pts = vec![];
             for ptup in &trellis {
@@ -122,7 +122,7 @@ impl<const N: usize, const M: usize> ViterbiDecoder<N, M> {
             }
             prior_tups.push(pts);
         }
-        let mut metrics = vec![vec![f32::MAX; 2 * gamma]; s];
+        let mut metrics = vec![vec![f32::INFINITY; 2 * gamma]; s];
         metrics[0][0] = 0.0;
         metrics[0][gamma] = 0.0;
         Self {
@@ -145,7 +145,7 @@ impl<const N: usize, const M: usize> ViterbiDecoder<N, M> {
             let mut costs = vec![];
             for (p, _, _, a) in pts {
                 let last = self.metrics[*p][self.gamma + self.t_idx - 1];
-                let aa: Vec<f32> = a.iter().map(|aaa| (2 * aaa - 1) as f32).collect();
+                let aa: Vec<f32> = a.iter().map(|&aaa| 2.0 * aaa as f32 - 1.0).collect();
                 costs.push(llr(&r, &aa) + last);
             }
             let idx = if costs[0] < costs[1] { 0 } else { 1 };

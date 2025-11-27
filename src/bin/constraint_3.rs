@@ -2,13 +2,13 @@ use awgn::*;
 use convcodes::*;
 
 fn main() {
-    let polynomials = [[1, 1, 1, 1, 0, 0, 1], [1, 0, 1, 1, 0, 1, 1]];
+    let polynomials = [[1, 0, 1], [1, 1, 1]];
     let gamma = 5 * (polynomials[0].len() - 1);
     let ec = 1.0;
     let ecn0_dbs = vec![-3.0, -2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0];
     let mut bers = vec![0.0; ecn0_dbs.len()];
 
-    let seed = 1;
+    let seed = 0;
     let mut rng = Generator::new(seed, 128);
 
     for (ii, ecn0_db) in ecn0_dbs.iter().enumerate() {
