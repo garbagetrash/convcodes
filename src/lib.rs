@@ -49,7 +49,7 @@ impl<const N: usize, const M: usize> ConvolutionalEncoder<N, M> {
         bytes.into_iter().flat_map(|&byte| self.push_byte(byte)).collect()
     }
 
-    pub fn push_block(&mut self, x: &[u8]) -> Vec<u8> {
+    pub fn push_slice(&mut self, x: &[u8]) -> Vec<u8> {
         x.iter().flat_map(|&xx| self.push(xx)).collect()
     }
 }
@@ -108,9 +108,9 @@ pub fn build_trellis<const N: usize, const M: usize>(
     output
 }
 
-fn llr(x: &[f32], a: &[f32]) -> f32 {
-    assert_eq!(x.len(), a.len());
-    x.iter()
+fn llr(symbol: &[f32], a: &[f32]) -> f32 {
+    assert_eq!(symbol.len(), a.len());
+    symbol.iter()
         .zip(a.iter())
         .map(|(xx, aa)| (xx - aa).powi(2))
         .sum::<f32>()
@@ -158,6 +158,7 @@ impl<const N: usize, const M: usize> ViterbiDecoder<N, M> {
         }
     }
 
+    #[inline]
     pub fn push(&mut self, r: [f32; N]) -> Option<u8> {
         let mut new_metrics = vec![0.0; self.s];
         for ss in 0..self.s {
@@ -225,7 +226,7 @@ impl<const N: usize, const M: usize> ViterbiDecoder<N, M> {
         }
     }
 
-    pub fn push_block(&mut self, r: &[[f32; N]]) -> Vec<u8> {
+    pub fn push_slice(&mut self, r: &[[f32; N]]) -> Vec<u8> {
         let mut output = vec![];
         for rr in r {
             if let Some(y) = self.push(*rr) {
@@ -267,7 +268,7 @@ mod tests {
 
         let x = vec![0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1];
         let xlen = x.len();
-        let y = cc.push_block(&x);
+        let y = cc.push_slice(&x);
         assert_eq!(y.len(), 2 * xlen);
     }
 
@@ -276,7 +277,7 @@ mod tests {
         let mut cc = ConvolutionalEncoder::<2, 3>::new([[1, 0, 1], [1, 1, 1]]);
 
         let x = vec![1, 1, 0, 0, 1, 0, 1, 0, 0];
-        let y = cc.push_block(&x);
+        let y = cc.push_slice(&x);
         assert_eq!(
             y,
             vec![1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1]

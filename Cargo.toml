@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 awgn = { git = "ssh://git@github.com/garbagetrash/awgn.git" }
+bytemuck = "1"
 
 [[bin]]
 name = "ccsds_rate_1_2_ber_curve"
@@ -14,3 +15,6 @@ name = "constraint_3"
 
 [[bin]]
 name = "ccsds_rate_1_2_encoder"
+
+[[bin]]
+name = "ccsds_rate_1_2_decoder"
