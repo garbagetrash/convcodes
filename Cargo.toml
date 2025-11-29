@@ -11,3 +11,6 @@ name = "ccsds_rate_1_2_ber_curve"
 
 [[bin]]
 name = "constraint_3"
+
+[[bin]]
+name = "ccsds_rate_1_2_encoder"

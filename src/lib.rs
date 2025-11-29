@@ -13,6 +13,7 @@ impl<const N: usize, const M: usize> ConvolutionalEncoder<N, M> {
         }
     }
 
+    #[inline]
     pub fn push(&mut self, x: u8) -> [u8; N] {
         // Push new bit into LFSR
         self.idx = if self.idx == 0 { M - 1 } else { self.idx - 1 };
@@ -27,6 +28,25 @@ impl<const N: usize, const M: usize> ConvolutionalEncoder<N, M> {
             }
         }
         output
+    }
+
+    // TODO: This feels kinda slow and suck
+    pub fn push_byte(&mut self, byte: u8) -> [u8; N] {
+        let mut output = [0; N];
+        for i in 0..8 {
+            let tmp = self.push((byte >> (7 - i)) & 1);
+            for j in 0..N {
+                let byteidx = (i * N + j) / 8;
+                let bitidx = (i * N + j) % 8;
+                let shifted = tmp[j] << (7 - bitidx);
+                output[byteidx] = shifted;
+            }
+        }
+        output
+    }
+
+    pub fn push_byte_slice(&mut self, bytes: &[u8]) -> Vec<u8> {
+        bytes.into_iter().flat_map(|&byte| self.push_byte(byte)).collect()
     }
 
     pub fn push_block(&mut self, x: &[u8]) -> Vec<u8> {

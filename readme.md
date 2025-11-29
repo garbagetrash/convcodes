@@ -8,6 +8,16 @@ both an encoder and a decoder using the
 Currently missing support for puncturing, but the decoder should work fine if
 you simply feed it 0.0 for any bit positions that are punctured.
 
+TODO
+====
+
+- Puncturing support.
+- Command line streaming applications.
+  - Encoder
+  - Decoder
+- Performance optimizations.
+
+
 To generate some BER curves for a small constraint K=3 or the
 [CCSDS K=7](https://ccsds.org/Pubs/131x0b5.pdf) rate 1/2 codes, try the example
 binaries:
